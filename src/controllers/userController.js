@@ -1,17 +1,21 @@
 import { UserModel } from "../models/userModel.js";
+import { BaseController } from "./BaseController.js";
 
-
-export class UserController {
+export class UserController extends BaseController {
     async index(req, res) {
         try {
             const results = await UserModel.getAllUsers();
-            res.status(200).json({
-                userList: results,
-            });
+            this.success(
+                res, 200, 
+                "Users fetched successfully", 
+                results
+            );
+
         } catch (error) {
-            res.status(500).json({
-                message: error.message,
-            });
+            this.error(
+                res, 500, 
+                error.message
+            );
         }
     }
 
@@ -19,14 +23,17 @@ export class UserController {
         try {
             const { name } = req.body;
             const newUser = await UserModel.createUser(name);
-            res.status(201).json({
-                message: "User created successfully",
-                user: newUser,
-            });
+            this.success(
+                res, 201, 
+                "User created successfully", 
+                newUser
+            );
+
         } catch (error) {
-            res.status(500).json({
-                message: error.message,
-            });
+            this.error(
+                res, 500, 
+                error.message
+            );
         }
     }
 
@@ -34,19 +41,17 @@ export class UserController {
         try {
             const { id } = req.params;
             const user = await UserModel.getUser(id);
-            if (user) {
-                res.status(200).json({
-                    user,
-                });
-            } else {
-                res.status(404).json({
-                    message: "User not found",
-                });
-            }
+            this.success(
+                res, 200, 
+                "User found", 
+                user
+            );
+
         } catch (error) {
-            res.status(500).json({
-                message: error.message,
-            });
+            this.error(
+                res, 500, 
+                error.message
+            );
         }
     }
 
@@ -55,14 +60,17 @@ export class UserController {
             const { id } = req.params;
             const { name } = req.body;
             const updatedUser = await UserModel.updateUser(id, name);
-            res.status(200).json({
-                message: "User updated successfully",
-                user: updatedUser,
-            });
+            this.success(
+                res, 200, 
+                "User updated successfully", 
+                updatedUser
+            );
+
         } catch (error) {
-            res.status(500).json({
-                message: error.message,
-            });
+            this.error(
+                res, 500, 
+                error.message
+            );
         }
     }
 
@@ -70,12 +78,17 @@ export class UserController {
         try {
             const { id } = req.params;
             const result = await UserModel.deleteUser(id);
-            res.status(200).json(result);
+            this.success(
+                res, 200, 
+                "User deleted successfully", 
+                result
+            );
+
         } catch (error) {
-            res.status(500).json({
-                message: error.message,
-            });
+            this.error(
+                res, 500, 
+                error.message
+            );
         }
     }
-    
 }
